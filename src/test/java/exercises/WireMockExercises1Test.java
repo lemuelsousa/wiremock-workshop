@@ -7,6 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 
 @WireMockTest(httpPort = 9876)
@@ -30,6 +31,9 @@ public class WireMockExercises1Test {
 		 * to /requestLoan with an HTTP status code 200
 		 ************************************************/
 
+		stubFor(post(urlEqualTo("/requestLoan"))
+						.willReturn(aResponse()
+								.withStatus(200)));
 	}
 
 	public void setupStubExercise102() {
@@ -40,6 +44,10 @@ public class WireMockExercises1Test {
 		 * a Content-Type header with value application/json
 		 ************************************************/
 
+		stubFor(post(urlEqualTo("/requestLoan"))
+				.willReturn(aResponse()
+						.withHeader("Content-Type", "application/json")));
+
 	}
 
 	public void setupStubExercise103() {
@@ -49,6 +57,11 @@ public class WireMockExercises1Test {
 		 * to /requestLoan with a plain text response body
 		 * equal to 'Loan application received!'
 		 ************************************************/
+
+		stubFor(post(urlEqualTo("/requestLoan"))
+				.willReturn(aResponse()
+						.withHeader("Content-Type", "text/plain")
+						.withBody("Loan application received!")));
 
 	}
 
@@ -82,6 +95,7 @@ public class WireMockExercises1Test {
 		then().
 				assertThat().
 				contentType(ContentType.JSON);
+
 	}
 
 	@Test
