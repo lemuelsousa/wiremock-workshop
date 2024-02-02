@@ -41,6 +41,11 @@ public class WireMockExercises2Test {
          * for an example of how to do this
          ************************************************/
 
+        stubFor(post(urlEqualTo("/requestLoan"))
+                .willReturn(aResponse()
+                        .withStatus(503)
+                        .withStatusMessage("Loan processor service unavailable")));
+
     }
 
     public void setupStubExercise202() {
@@ -54,6 +59,11 @@ public class WireMockExercises2Test {
          * fixed delay of 3000 milliseconds.
          ************************************************/
 
+        stubFor(post("/requestLoan")
+                .withHeader("speed", containing("slow"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withFixedDelay(3000)));
     }
 
     public void setupStubExercise203() {
@@ -66,6 +76,10 @@ public class WireMockExercises2Test {
          * Respond with a Fault of type RANDOM_DATA_THEN_CLOSE
          ************************************************/
 
+        stubFor(post("/requestLoan")
+                .withCookie("session", containing("invalid"))
+                .willReturn(aResponse().withFault(Fault.RANDOM_DATA_THEN_CLOSE)));
+
     }
 
     public void setupStubExercise204() {
@@ -77,6 +91,11 @@ public class WireMockExercises2Test {
          * - the 'backgroundCheck' header has value 'OK'
          * - the 'backgroundCheck' header is not present
          ************************************************/
+
+        stubFor(post("/requestLoan")
+                .withHeader("backgroundCheck", containing("OK").or(absent()))
+                .willReturn(aResponse()
+                        .withStatus(200)));
 
     }
 
@@ -92,6 +111,10 @@ public class WireMockExercises2Test {
          * field, which is a child element of 'loanDetails'
          ************************************************/
 
+        stubFor(post(urlEqualTo("/requestLoan"))
+                .withRequestBody(matchingJsonPath("$.loanDetails.[?(@.amount == '1000')]"))
+                .willReturn(aResponse()
+                        .withStatus(200)));
     }
 
     @Test
