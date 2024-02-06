@@ -55,6 +55,8 @@ public class WireMockExercises5Test {
          * has been submitted to the /requestLoan endpoint
          */
 
+        verify(exactly(1), postRequestedFor(urlEqualTo("/requestLoan")));
+
     }
 
     @ParameterizedTest(name = "Request a loan for {0}")
@@ -91,5 +93,12 @@ public class WireMockExercises5Test {
          *   (hint: see setupStubExercise205() in WireMockAnswers2Test.java)
          */
 
+        verify(
+                exactly(1),
+                postRequestedFor(urlEqualTo("/requestLoan"))
+                        .withHeader("Content-Type", containing("application/json"))
+                        .withRequestBody(matchingJsonPath(
+                                String.format("$.loanDetails.[?(@.amount == %d)]", loanAmount)))
+        );
     }
 }
