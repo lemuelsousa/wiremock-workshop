@@ -47,6 +47,11 @@ public class WireMockExercises4Test {
          * already active, so you don't need to do that yourself.
          ************************************************/
 
+        wiremock.stubFor(get(urlEqualTo("/echo-port"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("Listening on port {{ request.port }}")
+                        .withTransformers("response-template")));
     }
 
     public void setupStubExercise402() {
@@ -55,11 +60,16 @@ public class WireMockExercises4Test {
          * Create a stub that listens at path /echo-loan-amount
          * and responds to all POST requests with HTTP
          * status code 200 and a response body containing
-         * the text 'Received loan application request for $<amount>',         *
+         * the text 'Received loan application request for $<amount>',
          * where <amount> is the value of the JSON element
          * loanDetails.amount extracted from the request body
          ************************************************/
 
+        wiremock.stubFor(post(urlPathEqualTo("/echo-loan-amount"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("Received loan application request for ${{ jsonPath request.body '$.loanDetails.amount' }}")
+                        .withTransformers("response-template")));
     }
 
     @Test
